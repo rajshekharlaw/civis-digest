@@ -1,0 +1,21 @@
+name: Civis consultations digest
+
+on:
+  schedule:
+    # 04:05 UTC = 9:35 AM IST, every day. GitHub can run scheduled jobs a few minutes late.
+    - cron: "5 4 * * *"
+  workflow_dispatch: {}   # adds a "Run workflow" button for manual test runs
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Send digest to Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: python civis_digest.py
